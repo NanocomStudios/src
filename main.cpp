@@ -39,7 +39,7 @@
 volatile unsigned int inp = 0;
 volatile bool int_h = false;
 
-char REG[64];
+char REG[16];
 
 char textBuffer[TEXTSIZE];
 char tmpBuffer[] = {0,0};
@@ -124,12 +124,9 @@ int main()
 		gpio_init(i);
 		gpio_set_dir(i, GPIO_IN);
 	}
+	gpio_init(18); // Is Busy
+	gpio_set_dir(18, GPIO_IN);	
 
-	for(char i = 18; i < 20; i++){
-		gpio_init(i);
-		gpio_set_dir(i, GPIO_IN);
-	}
-	
 	gpio_init(20); // Enable
 	gpio_set_dir(20, GPIO_IN);	
 
@@ -141,15 +138,19 @@ int main()
 	
 	char buff[9];
 	int addr = 0;
-
+	for(int x = 0; x < 8; x++){
+		gpio_put(22,1);
+	}
 	gpio_put(22,0);
 	REG[F_COL] = COL_WHITE;
 	drawCursor();
+
 	while (true){
-		inp = *(unsigned int*)(0xd0000004);
-		if((inp & 0x100000) == 0x100000 && (inp & 0x200000) == 0 && int_h == false){
-			gpio_put(22,1);
-			addr = (((inp & 0xC0000) >> 2) + (inp & 0xF000)) >> 12;
+		//(inp & 0x40000) == 0x40000
+		if(gpio_get(18) == true){
+			while(gpio_get(20) == true);
+			inp = *(unsigned int*)(0xd0000004);
+			addr = (inp & 0xF000) >> 12;
 
 			REG[addr] = (char)(inp & 0xFF);
 
@@ -166,20 +167,16 @@ int main()
 					break;
 				}
 			}
+			
 			// DecHexNum(buff,inp, 8);
-			// DrawTextBg(buff, 0,400,1,1,COL_WHITE,COL_BLACK);
-
+			// DrawTextBg(buff, 200,400,1,1,COL_WHITE,COL_BLACK);
 			// DecHexNum(buff,REG[addr], 2);
 			// DrawTextBg(buff, 200,(addr * 8),1,1,COL_WHITE,COL_BLACK);
-
-			int_h == true;
-		}else if((inp & 0x100000) == 0x100000 && (inp & 0x200000) == 0 && int_h == true){
-
-		}else{
-			int_h = false;
+			for(int x = 0; x < 8; x++){
+				gpio_put(22,1);
+			}
 			gpio_put(22,0);
 		}
-		
 		
 	}
 }
