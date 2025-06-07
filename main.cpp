@@ -143,7 +143,7 @@ int main()
 	}
 	gpio_put(22,0);
 	REG[F_COL] = COL_WHITE;
-	drawCursor();
+	drawCursor(); 
 
 	while (true){
 		//(inp & 0x40000) == 0x40000
