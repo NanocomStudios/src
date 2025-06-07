@@ -168,10 +168,10 @@ int main()
 				}
 			}
 			
-			// DecHexNum(buff,inp, 8);
-			// DrawTextBg(buff, 200,400,1,1,COL_WHITE,COL_BLACK);
-			// DecHexNum(buff,REG[addr], 2);
-			// DrawTextBg(buff, 200,(addr * 8),1,1,COL_WHITE,COL_BLACK);
+			DecHexNum(buff,inp, 8);
+			DrawTextBg(buff, 200,400,1,1,COL_WHITE,COL_BLACK);
+			DecHexNum(buff,REG[addr], 2);
+			DrawTextBg(buff, 200,(addr * 8),1,1,COL_WHITE,COL_BLACK);
 			for(int x = 0; x < 8; x++){
 				gpio_put(22,1);
 			}
